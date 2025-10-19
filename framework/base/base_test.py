@@ -10,13 +10,21 @@ def config():
     return get_config()
 
 
+@pytest.fixture(params=["chromium", "firefox", "webkit"])
+def browser_name(request):
+    """Browser name fixture."""
+    return request.param
+
+
 @pytest_asyncio.fixture(scope="function")
-async def page(config):
+async def page(config, browser_name):
     """Page fixture."""
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=config.get('headless', True))
-        context = await browser.new_context()
+        browser = getattr(p, browser_name)
+        headless = config.get('headless', True)
+        browser_instance = await browser.launch(headless=headless)
+        context = await browser_instance.new_context()
         page = await context.new_page()
         yield page
         await context.close()
-        await browser.close()
+        await browser_instance.close()

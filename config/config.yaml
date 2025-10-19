@@ -1,6 +1,6 @@
 base_url: "https://playwright.dev"
 api_base_url: "https://reqres.in/api"
 browser: "chromium"
-headless: false
+headless: True
 username: "test_user"
 password: "password123"
