@@ -9,5 +9,8 @@ async def test_page_title(page, config):
     """Test page title."""
     base_page = BasePage(page)
     await base_page.navigate_to(config['base_url'])
-    title = await base_page.get_title()
-    await expect(title).to_be('Fast and reliable end-to-end testing for modern web apps | Playwright')
+    # Use Playwright's expect on the page to check the title
+    expected = (
+        'Fast and reliable end-to-end testing for modern web apps | Playwright'
+    )
+    await expect(page).to_have_title(expected)
