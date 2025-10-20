@@ -41,10 +41,27 @@ pytest test_hybrid.py
 
 ## Run Tests
 ```bash
-pytest test_hybrid.py
+pytest
+```
+
+## Allure Reports
+
+### Generate and View Reports
+```bash
+# Run tests with allure results
+pytest --alluredir=reports/allure-results
+
+# Generate HTML report
+allure generate reports/allure-results -o reports/allure-report --clean
+
+# Serve report (opens browser automatically)
+allure serve reports/allure-results
 ```
 
 ## Structure
-- `conftest.py` - Test fixtures for browser and API sessions
-- `test_hybrid.py` - Sample hybrid tests
+- `conftest.py` - Global test fixtures
+- `framework/` - Test framework components
+- `tests/` - Test cases organized by type
+- `config/` - Configuration files
+- `reports/` - Test reports and results
 - `pytest.ini` - Pytest configuration
