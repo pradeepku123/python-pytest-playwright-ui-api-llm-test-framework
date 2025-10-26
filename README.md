@@ -4,22 +4,22 @@
 
 ### Create Virtual Environment
 ```bash
-python3 -m venv venv
+uv venv
 ```
 
 ### Activate Environment
 ```bash
 # Linux/Mac
-source venv/bin/activate
+source .venv/bin/activate
 
 # Windows
-venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 ### Install Dependencies
 ```bash
-pip install -r requirements.txt
-playwright install chromium
+uv pip install -r requirements.txt
+uv playwright install chromium
 ```
 
 ## Console Steps
