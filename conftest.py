@@ -1,9 +1,66 @@
 """Global pytest configuration."""
-from framework.base.base_test import config, page, browser_name
+import pytest
+import pytest_asyncio
+from playwright.async_api import async_playwright
+from framework.utils.config_reader import get_config
 from framework.utils.logger import setup_logger
 
 # Setup logging
 setup_logger()
 
-# Re-export fixtures for global access
-__all__ = ["config", "page", "browser_name"]
+@pytest.fixture(scope="session")
+def config():
+    """Configuration fixture."""
+    return get_config()
+
+@pytest.fixture(scope="session")
+def browser_type_launch_args(config):
+    """
+    Browser type launch arguments.
+    Can be customized based on config.
+    """
+    return {
+        "headless": config.get('headless', True),
+        "slow_mo": config.get('slow_mo', 0),
+    }
+
+@pytest.fixture(scope="session")
+def browser_name(request):
+    """Browser name fixture (can be parameterized if needed via CLI)."""
+    return request.config.getoption("--browser") if request.config.getoption("--browser") else "chromium"
+
+def pytest_addoption(parser):
+    """Add CLI options."""
+    parser.addoption("--browser", action="store", default="chromium", help="Browser to run tests on")
+
+@pytest_asyncio.fixture(scope="function")
+async def browser_instance(browser_name, browser_type_launch_args):
+    """
+    Function-scoped browser instance.
+    Launches the browser for each test to ensure isolation and stability.
+    """
+    async with async_playwright() as p:
+        browser_type = getattr(p, browser_name)
+        browser = await browser_type.launch(**browser_type_launch_args)
+        yield browser
+        await browser.close()
+
+@pytest_asyncio.fixture(scope="function")
+async def context(browser_instance):
+    """
+    Function-scoped browser context.
+    Creates a new context for each test to ensure isolation.
+    """
+    context = await browser_instance.new_context()
+    yield context
+    await context.close()
+
+@pytest_asyncio.fixture(scope="function")
+async def page(context):
+    """
+    Function-scoped page fixture.
+    Creates a new page within the context.
+    """
+    page = await context.new_page()
+    yield page
+    # Page is closed automatically when context closes
