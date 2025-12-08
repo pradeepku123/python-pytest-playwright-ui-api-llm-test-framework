@@ -14,13 +14,17 @@ def config():
     return get_config()
 
 @pytest.fixture(scope="session")
-def browser_type_launch_args(config):
+def browser_type_launch_args(config, request):
     """
     Browser type launch arguments.
-    Can be customized based on config.
+    Can be customized based on config and CLI arguments.
     """
+    headless = config.get('headless', True)
+    if request.config.getoption("--headed"):
+        headless = False
+        
     return {
-        "headless": config.get('headless', True),
+        "headless": headless,
         "slow_mo": config.get('slow_mo', 0),
     }
 
@@ -32,6 +36,7 @@ def browser_name(request):
 def pytest_addoption(parser):
     """Add CLI options."""
     parser.addoption("--browser", action="store", default="chromium", help="Browser to run tests on")
+    parser.addoption("--headed", action="store_true", help="Run tests in headed mode")
 
 @pytest_asyncio.fixture(scope="function")
 async def browser_instance(browser_name, browser_type_launch_args):
