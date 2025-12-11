@@ -23,10 +23,26 @@ def browser_type_launch_args(config, request):
     if request.config.getoption("--headed"):
         headless = False
         
-    return {
+    launch_args = {
         "headless": headless,
         "slow_mo": config.get('slow_mo', 0),
+        "args": []
     }
+
+    if not headless:
+        launch_args["args"].append("--start-maximized")
+        
+    return launch_args
+
+@pytest.fixture(scope="session")
+def browser_context_args(request):
+    """
+    Browser context arguments.
+    """
+    if request.config.getoption("--headed"):
+        return {"viewport": {"width": 1920, "height": 1080}}
+    else:
+        return {"viewport": {"width": 1920, "height": 1080}}
 
 @pytest.fixture(scope="session")
 def browser_name(request):
@@ -51,12 +67,12 @@ async def browser_instance(browser_name, browser_type_launch_args):
         await browser.close()
 
 @pytest_asyncio.fixture(scope="function")
-async def context(browser_instance):
+async def context(browser_instance, browser_context_args):
     """
     Function-scoped browser context.
     Creates a new context for each test to ensure isolation.
     """
-    context = await browser_instance.new_context()
+    context = await browser_instance.new_context(**browser_context_args)
     yield context
     await context.close()
 
