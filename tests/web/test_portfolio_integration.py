@@ -26,11 +26,17 @@ class TestPortfolioIntegration:
         dashboard_page = DashboardPage(page)
         portfolio_page = PortfolioPage(page)
         
-        # 1. Login with Admin
-        email = "admin" # User said username is admin
-        password = "superadmin"
+        # 1. Register and Login (Use fresh user for isolation)
+        unique_id = str(uuid.uuid4())[:8]
+        username = f"user_{unique_id}"
+        email = f"user_{unique_id}@example.com"
+        password = "Password123!"
+        full_name = f"Test User {unique_id}"
         
-        await login_page.navigate()
+        await register_page.navigate()
+        await register_page.register_user(full_name, email, username, password)
+        await page.wait_for_url("**/login")
+        await page.wait_for_timeout(1000)
         await login_page.login(email, password)
         await page.wait_for_url("**/dashboard")
         
