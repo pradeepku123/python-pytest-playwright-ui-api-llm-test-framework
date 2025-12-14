@@ -14,6 +14,14 @@ class DashboardPage(BasePage):
     MENU_BUDGET = "a[href='/budget']"
     MENU_ANALYTICS = "a[href='/analytics']"
     MENU_PROFILE = "a[href='/profile']"
+    MENU_RECOMMENDATIONS = "a[href='/recommendations']"
+    MENU_FACT_SHEET = "a[href='/fact-sheet-analysis']"
+    MENU_RISK = "a[href='/risk-profiling']"
+    MENU_SIP = "a[href='/sip']"
+    MENU_SWP = "a[href='/swp']"
+    MENU_INFLATION = "a[href='/inflation']"
+    MENU_NOTIFICATIONS = "a[href='/notifications']"
+    MENU_DB_ADMIN = "a[href='/database-admin']"
 
     async def is_loaded(self):
         """Check if dashboard is loaded."""
@@ -33,6 +41,30 @@ class DashboardPage(BasePage):
 
     async def navigate_to_analytics(self):
         await self.click(self.MENU_ANALYTICS)
+
+    async def navigate_to_recommendations(self):
+        await self.click(self.MENU_RECOMMENDATIONS)
+
+    async def navigate_to_fact_sheet(self):
+        await self.click(self.MENU_FACT_SHEET)
+
+    async def navigate_to_risk(self):
+        await self.click(self.MENU_RISK)
+
+    async def navigate_to_sip(self):
+        await self.click(self.MENU_SIP)
+
+    async def navigate_to_swp(self):
+        await self.click(self.MENU_SWP)
+
+    async def navigate_to_inflation(self):
+        await self.click(self.MENU_INFLATION)
+
+    async def navigate_to_notifications(self):
+        await self.click(self.MENU_NOTIFICATIONS)
+
+    async def navigate_to_db_admin(self):
+        await self.click(self.MENU_DB_ADMIN)
     
     async def get_total_portfolio_value(self) -> str:
         """Get the total portfolio value displayed on dashboard."""
