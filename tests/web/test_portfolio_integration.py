@@ -47,7 +47,7 @@ class TestPortfolioIntegration:
         # 3. Add Investment (Stock)
         stock_name = "Tech Corp"
         stock_amount = "1500" # 10 * 150
-        await portfolio_page.add_investment("Stock", stock_name, stock_amount)
+        await portfolio_page.add_investment("Stocks", stock_name, stock_amount)
         
         # Add another investment (Gold)
         gold_name = "Gold ETF"

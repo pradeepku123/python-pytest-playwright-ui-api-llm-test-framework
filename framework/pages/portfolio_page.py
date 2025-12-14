@@ -16,7 +16,7 @@ class PortfolioPage(BasePage):
     MODAL_NAME_INPUT = "#investmentName"
     MODAL_AMOUNT_INPUT = "#investedAmount"
     MODAL_CURRENT_VALUE_INPUT = "#currentValue"
-    MODAL_ADD_BUTTON = "#addInvestmentModal .modal-footer button.btn-primary"
+    MODAL_ADD_BUTTON = ".modal-footer button.btn-primary"
     
     # Table Locators
     PORTFOLIO_TABLE = "table"
@@ -57,7 +57,10 @@ class PortfolioPage(BasePage):
         rows = await self.page.locator("table tbody tr").all()
         names = []
         for row in rows:
-            # Assuming first cell has the name
-            name = await row.locator("td").first.text_content()
-            names.append(name.strip())
+            # Name is in the second column (index 1), often with status below it
+            # We use inner_text to preserve newlines and split
+            cell_text = await row.locator("td").nth(1).inner_text()
+            # unique name is the first line
+            name = cell_text.split('\n')[0].strip()
+            names.append(name)
         return names
