@@ -51,13 +51,24 @@ class DashboardPage(BasePage):
     async def navigate_to_risk(self):
         await self.click(self.MENU_RISK)
 
+    MENU_CALCULATORS = "a:has-text('Calculators')"
+
+    async def _ensure_calculators_menu_open(self):
+        """Ensure the calculators dropdown is open."""
+        # Check if SIP link is visible, if not click Calculators menu to expand
+        if not await self.page.locator(self.MENU_SIP).is_visible():
+            await self.click(self.MENU_CALCULATORS)
+
     async def navigate_to_sip(self):
+        await self._ensure_calculators_menu_open()
         await self.click(self.MENU_SIP)
 
     async def navigate_to_swp(self):
+        await self._ensure_calculators_menu_open()
         await self.click(self.MENU_SWP)
 
     async def navigate_to_inflation(self):
+        await self._ensure_calculators_menu_open()
         await self.click(self.MENU_INFLATION)
 
     async def navigate_to_notifications(self):
